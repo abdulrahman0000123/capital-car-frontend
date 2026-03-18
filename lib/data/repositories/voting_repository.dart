@@ -8,7 +8,7 @@ class VotingRepository {
 
   VotingRepository() 
       : _dio = Dio(BaseOptions(
-          baseUrl: 'http://localhost:5241/api/', // Change to environment variable if available
+          baseUrl: 'http://capital-car-app-backend.runasp.net/api/', // Change to environment variable if available
           connectTimeout: const Duration(seconds: 10),
         )),
         _storage = const FlutterSecureStorage() {

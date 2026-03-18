@@ -7,7 +7,8 @@ class LocationRepository {
   late HubConnection _hubConnection;
   final FlutterSecureStorage _storage;
 
-  final _locationController = StreamController<Map<String, dynamic>>.broadcast();
+  final _locationController =
+      StreamController<Map<String, dynamic>>.broadcast();
   Stream<Map<String, dynamic>> get locationStream => _locationController.stream;
 
   LocationRepository() : _storage = const FlutterSecureStorage() {
@@ -16,9 +17,9 @@ class LocationRepository {
 
   Future<void> _initSignalR() async {
     final token = await _storage.read(key: AppConstants.keyToken);
-    
+
     _hubConnection = HubConnectionBuilder()
-        .withUrl("http://localhost:5241/hubs/location", 
+        .withUrl("http://capital-car-app-backend.runasp.net/hubs/location",
             options: HttpConnectionOptions(
               accessTokenFactory: () async => token ?? '',
             ))
@@ -50,7 +51,8 @@ class LocationRepository {
       if (_hubConnection.state != HubConnectionState.Connected) {
         await _initSignalR();
       }
-      await _hubConnection.invoke("UpdateLocation", args: <Object>[latitude, longitude]);
+      await _hubConnection
+          .invoke("UpdateLocation", args: <Object>[latitude, longitude]);
     } catch (e) {
       print("Failed to send location: $e");
     }
