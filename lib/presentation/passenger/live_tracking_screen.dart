@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:capital_car_app/providers/location_provider.dart';
 
 class LiveTrackingScreen extends ConsumerStatefulWidget {
   const LiveTrackingScreen({super.key});
@@ -13,25 +14,28 @@ class LiveTrackingScreen extends ConsumerStatefulWidget {
 class _LiveTrackingScreenState extends ConsumerState<LiveTrackingScreen> {
   final MapController _mapController = MapController();
   LatLng _carLocation = const LatLng(30.0444, 31.2357); // Cairo default
-  bool _isCarMoving = false; // Will be driven by SignalR state
   
   @override
   void initState() {
     super.initState();
-    // TODO: Connect to LocationHub and listen for "LocationUpdated" events
-    // _signalRService.on("LocationUpdated", (arguments) {
-    //    final double lat = arguments[0];
-    //    final double lng = arguments[1];
-    //    setState(() {
-    //       _carLocation = LatLng(lat, lng);
-    //       _isCarMoving = true;
-    //       _mapController.move(_carLocation, 15.0);
-    //    });
-    // });
   }
 
   @override
   Widget build(BuildContext context) {
+    // Listen to Stream
+    ref.listen<AsyncValue<Map<String, dynamic>>>(liveLocationStreamProvider, (previous, next) {
+      next.whenData((location) {
+        final newLat = location['latitude'] as double;
+        final newLng = location['longitude'] as double;
+        final newLocation = LatLng(newLat, newLng);
+
+        setState(() {
+          _carLocation = newLocation;
+        });
+
+        _mapController.move(_carLocation, 15.0);
+      });
+    });
     return Scaffold(
       appBar: AppBar(
         title: const Text('التتبع المباشر للسيارة'),

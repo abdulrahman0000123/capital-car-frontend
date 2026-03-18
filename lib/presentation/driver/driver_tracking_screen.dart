@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:capital_car_app/providers/location_provider.dart';
 
 // Note: Requires SignalR Service connection which is pending in phase 1 integration
 class DriverTrackingScreen extends ConsumerStatefulWidget {
@@ -60,8 +61,10 @@ class _DriverTrackingScreenState extends ConsumerState<DriverTrackingScreen> {
           _currentPosition = position;
         });
         
-        // TODO: Send to LocationHub via SignalR Service
-        // signalRService.invokeMethod('UpdateLocation', [position.latitude, position.longitude, position.heading]);
+        ref.read(locationSenderProvider).updateDriverLocation(
+          position.latitude,
+          position.longitude,
+        );
       }
     });
 

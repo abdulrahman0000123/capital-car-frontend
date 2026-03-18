@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:capital_car_app/providers/auth_provider.dart';
+import 'package:capital_car_app/providers/voting_provider.dart';
 
 // Note: Requires backend implementation for fetching/submitting votes
 class VotingScreen extends ConsumerStatefulWidget {
@@ -11,22 +13,31 @@ class VotingScreen extends ConsumerStatefulWidget {
 }
 
 class _VotingScreenState extends ConsumerState<VotingScreen> {
-  // Mock data representing days the passenger has voted NOT GOING
-  final List<DateTime> _absentDays = [
-    DateTime.now().add(const Duration(days: 1)),
-  ];
+  final List<DateTime> _absentDays = [];
 
-  void _toggleVote(DateTime date) {
+  @override
+  void initState() {
+    super.initState();
+    // In a complete app, we would load existing votes here
+    // using another provider or async method fetching from API.
+  }
+
+  void _toggleVote(DateTime date, String passengerId, bool isGoing) {
     setState(() {
-      // Normalization to start of day
       final normalizedDate = DateTime(date.year, date.month, date.day);
-      if (_absentDays.any((d) => d.year == normalizedDate.year && d.month == normalizedDate.month && d.day == normalizedDate.day)) {
+      if (isGoing) {
+        // Going -> Remove from absent list
         _absentDays.removeWhere((d) => d.year == normalizedDate.year && d.month == normalizedDate.month && d.day == normalizedDate.day);
       } else {
-        _absentDays.add(normalizedDate);
+        // Not Going -> Add to absent list
+        if (!_absentDays.any((d) => d.year == normalizedDate.year && d.month == normalizedDate.month && d.day == normalizedDate.day)) {
+          _absentDays.add(normalizedDate);
+        }
       }
     });
-    // TODO: Send vote (isGoing: true/false) to API
+
+    // Send vote to backend API
+    ref.read(votingStateProvider.notifier).submitVote(passengerId, date, isGoing);
   }
 
   bool _isAbsent(DateTime date) {
@@ -35,6 +46,10 @@ class _VotingScreenState extends ConsumerState<VotingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Get Passenger ID
+    final authState = ref.watch(authStateProvider);
+    final passengerId = authState.value?.id ?? '22222222-2222-2222-2222-222222222222'; // fallback mock
+
     // Generate next 14 days
     final nextDays = List.generate(14, (i) => DateTime.now().add(Duration(days: i)));
 
@@ -83,7 +98,7 @@ class _VotingScreenState extends ConsumerState<VotingScreen> {
                     ),
                     value: !absent, // Switch denotes "Going"
                     onChanged: (bool value) {
-                      _toggleVote(date);
+                      _toggleVote(date, passengerId, value);
                     },
                     activeColor: Colors.green,
                     inactiveThumbColor: Colors.red,
