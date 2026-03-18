@@ -15,6 +15,11 @@ import 'package:capital_car_app/presentation/admin/passenger_details_screen.dart
 import 'package:capital_car_app/presentation/admin/add_passenger_screen.dart';
 import 'package:capital_car_app/presentation/admin/fund_control_screen.dart';
 import 'package:capital_car_app/presentation/admin/admin_previous_weeks_screen.dart';
+import 'package:capital_car_app/presentation/admin/holidays_screen.dart';
+import 'package:capital_car_app/presentation/admin/guest_management_screen.dart';
+import 'package:capital_car_app/presentation/passenger/voting_screen.dart';
+import 'package:capital_car_app/presentation/passenger/live_tracking_screen.dart';
+import 'package:capital_car_app/presentation/driver/driver_tracking_screen.dart';
 import 'package:capital_car_app/presentation/notifications/notifications_screen.dart';
 import 'package:capital_car_app/providers/auth_provider.dart';
 
@@ -38,6 +43,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       // If logged in and on login/splash route, redirect to dashboard
       if (isLoggedIn && (isLoginRoute || isSplashRoute)) {
         final userRole = authData.role;
+        if (userRole == 'driver') {
+          return '/driver/tracking';
+        }
         return userRole == 'admin' ? '/admin/dashboard' : '/passenger/dashboard';
       }
       
@@ -85,6 +93,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const WhyIPayScreen(),
       ),
       GoRoute(
+        path: '/passenger/voting',
+        builder: (context, state) => const VotingScreen(),
+      ),
+      GoRoute(
+        path: '/passenger/live-tracking',
+        builder: (context, state) => const LiveTrackingScreen(),
+      ),
+      GoRoute(
         path: '/passenger/attendance',
         builder: (context, state) => const UnderDevelopmentScreen(),
       ),
@@ -118,8 +134,22 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const AdminPreviousWeeksScreen(),
       ),
       GoRoute(
+        path: '/admin/holidays',
+        builder: (context, state) => const HolidaysScreen(),
+      ),
+      GoRoute(
+        path: '/admin/guest-management',
+        builder: (context, state) => const GuestManagementScreen(),
+      ),
+      GoRoute(
         path: '/admin/attendance',
         builder: (context, state) => const UnderDevelopmentScreen(),
+      ),
+      
+      // Driver Routes
+      GoRoute(
+        path: '/driver/tracking',
+        builder: (context, state) => const DriverTrackingScreen(),
       ),
       
       // Notifications (Both Admin & Passenger)

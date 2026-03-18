@@ -109,6 +109,37 @@ class _PassengerDashboardScreenState extends ConsumerState<PassengerDashboardScr
                 ),
               ),
               
+              const SizedBox(height: 16),
+              
+              // New Features: Voting and Tracking
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => context.push('/passenger/voting'),
+                      icon: const Icon(Icons.how_to_vote),
+                      label: const Text('تأكيد التواجد'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => context.push('/passenger/live-tracking'),
+                      icon: const Icon(Icons.map),
+                      label: const Text('تتبع السيارة'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.indigo,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              
               const SizedBox(height: 24),
               
               // Latest Updates
