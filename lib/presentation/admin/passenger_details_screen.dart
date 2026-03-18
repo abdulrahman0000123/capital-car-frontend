@@ -58,7 +58,7 @@ class PassengerDetailsScreen extends StatelessWidget {
                 color: (isActive ? AppColors.success : AppColors.error).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Row(
+              child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
@@ -66,7 +66,7 @@ class PassengerDetailsScreen extends StatelessWidget {
                     size: 18,
                     color: isActive ? AppColors.success : AppColors.error,
                   ),
-                  const SizedBox(width: 6),
+                  SizedBox(width: 6),
                   Text(
                     isActive ? 'نشط' : 'موقوف',
                     style: TextStyle(
